@@ -22,7 +22,7 @@
         {id: 2, label: 'Gene 2'},
         {id: 3, label: 'Gene 3'},
         {id: 4, label: 'Gene 4'},
-        {id: 5, label: 'Gene 5'}
+        {id: 'hi', label: 'Gene 5'}
     ]);
 
     // create an array with edges
@@ -31,7 +31,7 @@
         {from: 1, to: 3},
         {from: 1, to: 2},
         {from: 2, to: 4},
-        {from: 2, to: 5}
+        {from: 2, to: 'hi'}
     ]);
 
     // create a network
@@ -51,7 +51,7 @@
                 to:     {enabled: true, scaleFactor:1, type:'arrow'},
                 from:   {enabled: true, scaleFactor:1, type:'arrow'}
             },
-            arrowStrikethrough: true,
+            arrowStrikethrough: false,
             // play with chosen later
             // chosen: true,
             color:{
@@ -72,17 +72,17 @@
         nodes:{
             borderWidth: 0.5,
             borderWidthSelected: 3,
-            chosen: true, // function that calls on reorganizing network and dropping down table?
+            // chosen: true, // function that calls on reorganizing network and dropping down table?
             color:{
                 border: 'black',
                 background: 'white',
                 highlight:{
                     border: 'blue',
-                    background: 'blue',
+                    background: '#6bffff',
                 },
                 hover:{
-                    border: 'gray',
-                    background: 'gray',
+                    border: 'black',
+                    background: '#4ab3f9',
                 }
             },
 
@@ -136,6 +136,14 @@
     
     // initialize your network!
     var network = new vis.Network(container, data, options);
+    network.on("click", function (params) {
+        console.log(params)
+        var node_id = params['nodes'][0]
+        // params.event = "[original event]";
+        // document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
+        // console.log('click event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
+    });
+
     network.setOptions(options);
 </script>
 </body>
