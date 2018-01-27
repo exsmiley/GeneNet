@@ -13,9 +13,10 @@
 </head>
 <body>
 <div id="mynetwork"></div>
-
+<h1>Gene Net</h1>
 <script type="text/javascript">
     // create an array with nodes
+    // TODO keep appending nodes as needed
     var nodes = new vis.DataSet([
         {id: 1, label: 'Node 1'},
         {id: 2, label: 'Node 2'},
@@ -25,6 +26,7 @@
     ]);
 
     // create an array with edges
+    // TODO keep appending edges as needed
     var edges = new vis.DataSet([
         {from: 1, to: 3},
         {from: 1, to: 2},
@@ -40,10 +42,72 @@
         nodes: nodes,
         edges: edges
     };
-    var options = {};
 
+    var options = {
+        edges:{
+            // arrow direction indicates source gene activates destination gene? no arrow for suppression? maybe dashed arrows for suppression
+            arrows: {
+                to:     {enabled: true, scaleFactor:1, type:'arrow'},
+                from:   {enabled: true, scaleFactor:1, type:'arrow'}
+            },
+            arrowStrikethrough: true,
+            // play with chosen later
+            // chosen: true,
+            color:{
+                color: 'black',
+                highlight: 'blue',
+                inherit: 'from',
+                opacity: 1.0   
+            },
+            dashes: false,
+            // play with font later
+            // font: false
+            // from: 2,
+            hoverWidth: 2,
+            width: 0.5
+        },
+
+        nodes:{
+            borderWidth: 0.5,
+            borderWidthSelected: 3,
+            // chosen.node for function that calls on reorganizing network and dropping down table?
+            // chosen.label nice for aesthetics
+            fixed: false, // needs to be conditional
+            label: 'Gene',
+            labelHighlightBold: true,
+            title: 'Gene' // redundant of label, which is more important
+        },
+
+        // groups: {
+        //     myGroup: {color:{background:'red'}, borderWidth:3}
+        // };
+
+        // click events
+        interaction:{
+            dragNodes:true,
+            dragView: true,
+            hideEdgesOnDrag: false,
+            hideNodesOnDrag: false,
+            hover: true,
+            hoverConnectedEdges: true,
+            // play around with keyboard settings later
+            // keyboard: {
+            //     enabled: false,
+            //     speed: {x: 10, y: 10, zoom: 0.02},
+            //     bindToWindow: true
+            // },
+            multiselect: false,
+            navigationButtons: false,
+            selectable: true,
+            selectConnectedEdges: true,
+            tooltipDelay: 300, // make 'title' field?
+            zoomView: true
+        }
+    };
+    
     // initialize your network!
     var network = new vis.Network(container, data, options);
+    network.setOptions(options);
 </script>
 </body>
 </html>
