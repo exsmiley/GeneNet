@@ -18,11 +18,11 @@
     // create an array with nodes
     // TODO keep appending nodes as needed
     var nodes = new vis.DataSet([
-        {id: 1, label: 'Node 1'},
-        {id: 2, label: 'Node 2'},
-        {id: 3, label: 'Node 3'},
-        {id: 4, label: 'Node 4'},
-        {id: 5, label: 'Node 5'}
+        {id: 1, label: 'Gene 1'},
+        {id: 2, label: 'Gene 2'},
+        {id: 3, label: 'Gene 3'},
+        {id: 4, label: 'Gene 4'},
+        {id: 5, label: 'Gene 5'}
     ]);
 
     // create an array with edges
@@ -44,6 +44,7 @@
     };
 
     var options = {
+        // connections/arrows settings
         edges:{
             // arrow direction indicates source gene activates destination gene? no arrow for suppression? maybe dashed arrows for suppression
             arrows: {
@@ -67,20 +68,48 @@
             width: 0.5
         },
 
+        // nodes settings
         nodes:{
             borderWidth: 0.5,
             borderWidthSelected: 3,
-            // chosen.node for function that calls on reorganizing network and dropping down table?
+            chosen: true, // function that calls on reorganizing network and dropping down table?
+            color:{
+                border: 'black',
+                background: 'white',
+                highlight:{
+                    border: 'blue',
+                    background: 'blue',
+                },
+                hover:{
+                    border: 'gray',
+                    background: 'gray',
+                }
+            },
+
             // chosen.label nice for aesthetics
-            fixed: false, // needs to be conditional
-            label: 'Gene',
+            fixed: false, // needs to be conditionally dependent on click?
+            
+            label: 'Gene 1', // needs to be dynamic
             labelHighlightBold: true,
             title: 'Gene' // redundant of label, which is more important
         },
 
-        // groups: {
-        //     myGroup: {color:{background:'red'}, borderWidth:3}
-        // };
+        // layout settings
+        layout:{
+            randomSeed: undefined,
+            improvedLayout: true,
+            hierarchical:{
+                enabled: false // conditionally true after clicking on node...
+                // levelSeparation: 150,
+                // nodeSpacing: 100,
+                // treeSpacing: 200,
+                // blockShifting: true,
+                // edgeMinimization: true,
+                // parentCentralization: true,
+                // direction: 'UD',
+                // sortMethod: 'hubsize'
+            }
+        },
 
         // click events
         interaction:{
