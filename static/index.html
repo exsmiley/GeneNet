@@ -65,7 +65,8 @@
             // font: false
             // from: 2,
             hoverWidth: 2,
-            width: 0.5
+            // width: 0.5,
+            length: 3,
         },
 
         // nodes settings
@@ -91,7 +92,8 @@
             
             label: 'Gene 1', // needs to be dynamic
             labelHighlightBold: true,
-            title: 'Gene' // redundant of label, which is more important
+            title: 'Gene', // redundant of label, which is more important,
+            heightConstraint: true
         },
 
         // layout settings
@@ -99,7 +101,7 @@
             randomSeed: undefined,
             improvedLayout: true,
             hierarchical:{
-                enabled: false // conditionally true after clicking on node...
+                enabled: false, // conditionally true after clicking on node...
                 // levelSeparation: 150,
                 // nodeSpacing: 100,
                 // treeSpacing: 200,
@@ -131,18 +133,29 @@
             selectConnectedEdges: true,
             tooltipDelay: 300, // make 'title' field?
             zoomView: true
-        }
+        },
+
     };
     
     // initialize your network!
     var network = new vis.Network(container, data, options);
+
+    var heldNodes = []
     network.on("click", function (params) {
-        console.log(params)
         var node_id = params['nodes'][0]
-        // params.event = "[original event]";
-        // document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
-        // console.log('click event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
+        if(node_id) {
+            for(node1 of heldNodes) {
+                if(node_id != node1) {
+                    nodes.update({id: node1, fixed: false, x: 200, y: 200})
+                }
+            }
+            heldNodes = []
+
+            nodes.update({id: node_id, fixed: true, x: 0, y: -150});
+            heldNodes.push(node_id)
+        }
     });
+
 
     network.setOptions(options);
 </script>
