@@ -38,6 +38,11 @@
           display: block;
           border: 1px solid lightgray;
         }
+        .scrollable-menu {
+            height: auto;
+            max-height: 200px;
+            overflow-x: hidden;
+        }
     </style>
 </head>
 <body>
@@ -120,6 +125,7 @@
             </tbody>
           </table>
         </div>
+        <div class="btn-group" id="right-way"></div>
         <h4>Search for PMID/Gene Symbol:</h4>
         <div class="alert alert-danger" role="alert" id='warn' style="display: none;"></div>
         <div class="input-group mb-3">
@@ -149,9 +155,31 @@
                 $('#location').html(data['Chromosome']);
                 $('#locus').html(data['Location']);
                 $('#exon').html(data['Exon count']);
+
+                // now load even more info
+                // if(Object.keys(edgeMapMore[id]).length > 0) {
+                  $('#right-way').html('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Primary Connections <strong id="whoaa"></strong> <span class="caret"></span></button><ul class="dropdown-menu scrollable-menu" role="menu" id="even-more"></ul>')
+
+                  for(eid in edgeMapMore[id]) {
+                    var rel = edgeMapMore[id][eid];
+                    if(!rel) {
+                      rel = "Unknown"
+                    }
+                    $('#even-more').append('<li onClick=queryIdList(this) id=' + eid + '> '+ idToName[eid] + ': ' + rel + '</li>')
+                  }
+                  $('#whoaa').html('(' + Object.keys(edgeMapMore[id]).length + ')' )
+                // } else {
+                //   $('#right-way').html('')
+                // }
+                
             },
             type: 'GET',
         });
+    }
+
+    function queryIdList(more) {
+      queryId(more.id);
+      drawLoop(more.id);
     }
 
     function queryIdFromText() {
@@ -202,6 +230,7 @@
 
     // possibly keep track of edge map?
     var edgeMap = {};
+    edgeMapMore = {};
     nameToId = {};
     idToName = {};
 
@@ -222,6 +251,7 @@
                 color: '#'+Math.floor(Math.random()*16777215).toString(16)
             })
             edgeMap[node.id] = [];
+            edgeMapMore[node.id] = [];
             nameToId[node.label] = node.id;
             idToName[node.id] = node.label;
         }
@@ -238,6 +268,7 @@
                 })
                 num += 1
                 edgeMap[edge.from].push(edge.to)
+                edgeMapMore[edge.from][edge.to] = edge.label
             }
             s.refresh();
         })
@@ -387,6 +418,7 @@
       $('#location').html('');
       $('#locus').html('');
       $('#exon').html('');
+      $('#right-way').html('')
       s.kill();
       // clear the graph
       $('#derp').remove(); 
