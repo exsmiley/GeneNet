@@ -49,20 +49,6 @@
       </div>
     </nav>
 
-<div class="dropdown">
-  <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Sort by...
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">PMID</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Symbol</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Type</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Location</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Locus</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Exon</a></li>
-    </ul>
-</div>
-
-<!-- need to keep adding as many rows as there are genes -->
 <div class="table-responsive">  
   <table class="table table-striped table-bordered table-hover">
     <thead>
@@ -74,61 +60,10 @@
         <th>Gene Type</th>
         <th>Location</th>
         <th>Locus</th>
-        <!-- <th>Gene Length</th> -->
         <th>Exon</th>
       </tr>
     </thead>
     <tbody id='rows'>
-<!--       <tr>
-        <th scope="row">1</th>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <th scope="row">4</th>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <th scope="row">5</th>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr> -->
     </tbody>
   </table>
 </div>
@@ -157,9 +92,9 @@
         count += 1
         $('#rows').append('<tr>')//<th scope="row">' + count + '</th>')
         $('#rows').append('<td>'+ count +'</td>')
+        $('#rows').append('<td>'+ data[pmid]['Official Full Name'] +'</td>')
         $('#rows').append('<td>'+ pmid +'</td>')
         $('#rows').append('<td>'+ data[pmid]['Official Symbol'] +'</td>')
-        $('#rows').append('<td>'+ data[pmid]['Official Full Name'] +'</td>')
         $('#rows').append('<td>'+ data[pmid]['Gene type'] +'</td>')
         $('#rows').append('<td>'+ data[pmid]['Chromosome'] +'</td>')
         $('#rows').append('<td>'+ data[pmid]['Location'] +'</td>')
@@ -169,8 +104,6 @@
         
       }
     })
-
-
   </script>
 
 
