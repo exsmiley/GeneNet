@@ -103,6 +103,7 @@
           </table>
         </div>
         <h4>Search for PMID/Gene Symbol:</h4>
+        <div class="alert alert-danger" role="alert" id='warn' style="display: none;"></div>
         <div class="input-group mb-3">
           <input id='txt_field' class="form-control">
           <div class="input-group-append">
@@ -136,15 +137,16 @@
     }
 
     function queryIdFromText() {
-      var rawr = $('#txt_field').val()
+      var rawr1 = $('#txt_field').val()
+      rawr = rawr1.toUpperCase();
 
-      if(rawr == '') {
+      if(rawr == '' || (!idToName.hasOwnProperty(rawr) && !nameToId.hasOwnProperty(rawr))) {
+        $('#warn').html(rawr1 + " is not a valid input");
+        $('#warn').show()
         return
       }
 
-      rawr = rawr.toUpperCase();
-
-      if(!idToName.hasOwnProperty(rawr) && nameToId.hasOwnProperty(rawr)) {
+      if(nameToId.hasOwnProperty(rawr)) {
         rawr = nameToId[rawr]
       }
 
@@ -152,6 +154,8 @@
       queryId(rawr);
       drawLoop(rawr);
       $('#txt_field').val('')
+      $('#warn').val('')
+      $('#warn').hide()
     }
 
     $('#txt_field').keypress(function (e) {
