@@ -20,7 +20,15 @@ with open('data/edges.json') as f:
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('home.html')
+
+@app.route('/visual')
+def visual():
+    return render_template('visual.html')
+
+@app.route('/data')
+def data():
+    return render_template('data.html')
 
 
 @app.route('/api/nodes')
