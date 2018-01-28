@@ -32,7 +32,7 @@ def scrape_id(id):
         with open('raw/' + str(id), 'w') as outfile:
             json.dump(data, outfile)
     except:
-        print "Failed on {}".format(id)
+        print 'Failed on {}'.format(id)
 
 
 def load_data_from_html(s):
@@ -41,7 +41,7 @@ def load_data_from_html(s):
 
     # handle summary stuffs
     summaryDiv = soup.find(id='summaryDiv')
-    dl_data = summaryDiv.find_all("dt")
+    dl_data = summaryDiv.find_all('dt')
     for dlitem in dl_data:
         key = ' '.join(dlitem.text.split())
         value = dlitem.find_next_sibling('dd').text.strip()
@@ -51,10 +51,10 @@ def load_data_from_html(s):
         data[key] = value
 
     # get location
-    data['Location'] = soup.find("dl", {"class": "dl-chr-info"}).find('dd').text.strip()
+    data['Location'] = soup.find('dl', {'class': 'dl-chr-info'}).find('dd').text.strip()
     # print data['location']
 
-    data['Exon count'] = soup.find("dl", {"class": "dl-chr-info exon-count"}).find('dd').text.strip()
+    data['Exon count'] = soup.find('dl', {'class': 'dl-chr-info exon-count'}).find('dd').text.strip()
     
     data['Chromosome'] = soup.find('p', {'class': 'withnote margin_t2em'}).text.strip()
 
@@ -67,11 +67,12 @@ def merge_raw():
         with open('raw/'+id) as f:
             id_data = json.loads(f.read())
         all_data[id] = id_data
-    with open('data/processed.json', 'w') as f:
+    with open('data/processed_pmid.json', 'w') as f:
         json.dump(all_data, f)
     shutil.rmtree('raw')
 
 def scrape_ids():
+    '''main function for getting pmid data'''
     ids = get_all_ids_from_trrust()
     p = Pool(8)
 
@@ -81,5 +82,42 @@ def scrape_ids():
     # merges raw data and puts it in a single processed json
     merge_raw()
 
+def format_trrust_for_graph():
+    with open('data/trrust_raw.json') as f:
+        data = json.loads(f.read())
+
+    ids = set()
+    all_ids = []
+    passage = data['collection']['document']['passage']
+
+    nodes = {}
+    edges = []
+
+    for link in passage:
+        annotation = link['annotation']
+        gene1_id = annotation[0]['infon'][1]['__text']
+        nodes[gene1_id] = annotation[0]['text']
+
+        gene2_id = annotation[1]['infon'][1]['__text']
+        nodes[gene2_id] = annotation[1]['text']
+
+        # handle edge
+        edge_data = {'from': gene1_id, 'to': gene2_id}
+        edge_label = annotation[2]['text']
+        if edge_label != 'Unknown':
+            edge_data['label'] = edge_label
+        edges.append(edge_data)
+
+    node_list = []
+    for id, name in nodes.iteritems():
+        node_list.append({'id': id, 'label': name})
+
+    with open('data/nodes.json', 'w') as f:
+        json.dump(node_list, f)
+
+    with open('data/edges.json', 'w') as f:
+        json.dump(edges, f)        
+
+
 if __name__ == '__main__':
-    scrape_ids()
+    format_trrust_for_graph()

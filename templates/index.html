@@ -1,7 +1,7 @@
 <html>
 <head>
-    <script type="text/javascript" src="js/vis.js"></script>
-    <link href="css/vis.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/static/js/vis.js"></script>
+    <link href="/static/css/vis.css" rel="stylesheet" type="text/css" />
 
     <style type="text/css">
         #mynetwork {
@@ -28,7 +28,7 @@
     // create an array with edges
     // TODO keep appending edges as needed
     var edges = new vis.DataSet([
-        {from: 1, to: 3},
+        {from: 1, to: 3, label: 'derp'},
         {from: 1, to: 2},
         {from: 2, to: 4},
         {from: 2, to: 'hi'}
@@ -48,7 +48,7 @@
         edges:{
             // arrow direction indicates source gene activates destination gene? no arrow for suppression? maybe dashed arrows for suppression
             arrows: {
-                to:     {enabled: true, scaleFactor:1, type:'arrow'},
+                // to:     {enabled: true, scaleFactor:1, type:'arrow'},
                 from:   {enabled: true, scaleFactor:1, type:'arrow'}
             },
             arrowStrikethrough: false,
