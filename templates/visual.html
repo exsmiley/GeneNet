@@ -380,6 +380,13 @@
     }
 
     function reset() {
+      $('#pmid').html('');
+      $('#gene-name').html('');
+      $('#gene-symbol').html('');
+      $('#gene-type').html('');
+      $('#location').html('');
+      $('#locus').html('');
+      $('#exon').html('');
       s.kill();
       // clear the graph
       $('#derp').remove(); 
