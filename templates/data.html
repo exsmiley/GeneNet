@@ -143,6 +143,7 @@
   <script type="text/javascript">
 
     var pmidData = {};
+    $('#rows').append('<h1>Loading...</h1>')
 
     $.get('/api/all_pmids', function(data) {
 
@@ -150,6 +151,7 @@
       console.log(data[2])
 
       // now populate tables
+      $('#rows').html('')
       count = 0
       for(var pmid in data) {
         count += 1
