@@ -49,7 +49,15 @@ def get_all_pmids():
 @app.route('/api/pmid')
 def get_pmid():
     pmid = request.args.get('pmid')
-    return jsonify(pmid_data[pmid])
+    data = pmid_data[pmid]
+    data['gene_expression_img'] = 'http://genecardsdata.blob.core.windows.net/rna-expression-v460/gene_expression_{}.png'.format(data['Official Symbol'])
+    data['protein_expression_img'] = 'http://genecardsdata.blob.core.windows.net/protein-expression-v460/protein_expression_{}.png'.format(data['Official Symbol'])
+    return jsonify(data)
+
+
+@app.route('/api/more')
+def get_more():
+    return render_template('more.html')
 
 
 if __name__ == '__main__':
