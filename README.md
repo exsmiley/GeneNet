@@ -1,2 +1,2 @@
 # GeneNet
-Gene network visualization
+Gene network Visualization

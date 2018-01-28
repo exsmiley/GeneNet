@@ -69,42 +69,35 @@
           <table class="table table-striped table-bordered table-hover">
             <thead>
               <tr>
-                <th class="col-md-3">Info Type</th> 
+                <!-- <th class="col-md-3"></th>  -->
+                <th id='gene-name'></th> 
                 <th class="col-md-3"></th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th scope="row">PMID</th>
-                <td>23414</td>
-              </tr>
-              <tr>
-                <th scope="row">Gene Name</th>
-                <td></td>
+                <td id='pmid'></td>
               </tr>
               <tr>
                 <th scope="row">Gene Symbol</th>
-                <td></td>
+                <td id='gene-symbol'></td>
               </tr>
               <tr>
                 <th scope="row">Gene Type</th>
-                <td></td>
+                <td id=gene-type></td>
               </tr>
               <tr>
                 <th scope="row">Location</th>
-                <td></td>
+                <td id=location></td>
               </tr>
               <tr>
                 <th scope="row">Locus</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">Gene Length</th>
-                <td></td>
+                <td id=locus></td>
               </tr>
               <tr>
                 <th scope="row">Exon</th>
-                <td></td>
+                <td id=exon></td>
               </tr>
             </tbody>
           </table>
@@ -120,14 +113,31 @@
     </div>
   </div>
   <script>
-
-    function queryId() {
-      // TODO queries the id from the server
+    var pmidData={}
+    function queryId(id) {    
+        $.ajax({
+            url:'/api/pmid',
+            data:{
+                pmid: id
+            },
+            success: function(data) {
+                console.log(data),
+                $('#pmid').html(id);
+                $('#gene-name').html(data['Official Full Name']);
+                $('#gene-symbol').html(data['Official Symbol']);
+                $('#gene-type').html(data['Gene type']);
+                $('#location').html(data['Location']);
+                $('#locus').html(data['Chromosome']);
+                $('#exon').html(data['Exon count']);
+            },
+            type: 'GET',
+        });
     }
 
     function queryIdFromText() {
       rawr = $('#txt_field').val()
       console.log(rawr)
+      queryId(rawr);
       $('#txt_field').val('')
     }
 
