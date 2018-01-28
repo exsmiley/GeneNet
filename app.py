@@ -55,10 +55,5 @@ def get_pmid():
     return jsonify(data)
 
 
-@app.route('/api/more')
-def get_more():
-    return render_template('more.html')
-
-
 if __name__ == '__main__':
     app.run()
