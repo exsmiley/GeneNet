@@ -1,5 +1,7 @@
 <html>
 <head>
+    <link rel="shortcut icon" type="image/png" href="/static/favicon.png"/>
+
     <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/static/js/sigma.min.js"></script>
     <script type="text/javascript" src="/static/js/plugins/supervisor.js"></script>
@@ -32,30 +34,30 @@
     </ul>
     </div>
   </nav> -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-faded">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Gene Net</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="navbarNavDropdown" class="navbar-collapse collapse">
-            <ul class="navbar-nav mr-auto">
-              <!--needed for the other to be on the right-->
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/visual">Visual Network</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/data">Database</a>
-                </li>
-            </ul>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-faded">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Gene Net</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="navbarNavDropdown" class="navbar-collapse collapse">
+        <ul class="navbar-nav mr-auto">
+          <!--needed for the other to be on the right-->
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/visual">Visual Network</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/data">Database</a>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
   
   <div class="container">
     <div class="row">
@@ -64,53 +66,79 @@
       </div>
       <div class="col-sm-4">
         <div class="table-responsive">  
-    <table class="table table-striped table-bordered table-hover">
-      <thead>
-        <tr>
-          <th class="col-md-3">Info Type</th> 
-          <th class="col-md-3"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">PMID</th>
-          <td>23414</td>
-        </tr>
-        <tr>
-          <th scope="row">Gene Name</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th scope="row">Gene Symbol</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th scope="row">Gene Type</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th scope="row">Location</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th scope="row">Locus</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th scope="row">Gene Length</th>
-          <td></td>
-        </tr>
-        <tr>
-          <th scope="row">Exon</th>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          <table class="table table-striped table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="col-md-3">Info Type</th> 
+                <th class="col-md-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">PMID</th>
+                <td>23414</td>
+              </tr>
+              <tr>
+                <th scope="row">Gene Name</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Gene Symbol</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Gene Type</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Location</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Locus</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Gene Length</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Exon</th>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Search for PMID/Gene Type:</h4>
+        <div class="input-group mb-3">
+          <input id='txt_field' class="form-control">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" onClick='queryIdFromText()'>Search!</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <script>
+
+    function queryId() {
+      // TODO queries the id from the server
+    }
+
+    function queryIdFromText() {
+      rawr = $('#txt_field').val()
+      console.log(rawr)
+      $('#txt_field').val('')
+    }
+
+    $('#txt_field').keypress(function (e) {
+      var code = e.keyCode || e.which;
+      if (code === 13) {
+        queryIdFromText() /*add this, if you want to submit form by pressing `Enter`*/
+      }
+    });
+
+
     // Let's first initialize sigma:
     var s = new sigma('derp');
     var graph = s.graph;
@@ -121,11 +149,16 @@
       edgeHoverSizeRatio: 3
     });
 
+    var nodes;
+    var edges;
+
     // possibly keep track of edge map?
-    var edgeMap = {}
+    var edgeMap = {};
+    var nameToId = {};
 
     // Load edges and nodes from API through AJAX
     $.get('/api/nodes', function(data) {
+        nodes = data;
         i = 0
         N = data.length
         for(node of data) {
@@ -141,10 +174,12 @@
                 color: '#'+Math.floor(Math.random()*16777215).toString(16)
             })
             edgeMap[node.id] = [];
+            nameToId[node.label] = node.id;
         }
         s.refresh();
         
         $.get('/api/edges', function(data) {
+            edges = data;
             num = 1
             for(edge of data) {
                 graph.addEdge({
