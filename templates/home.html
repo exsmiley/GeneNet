@@ -11,86 +11,88 @@
 
   <title>Gene Net</title>
 </head>
-<body>
-<!-- <nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="">Gene Net</a>
+<body id="page-top">
+  <nav class="navbar navbar-expand-lg navbar-light bg-faded">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Gene Net</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="navbarNavDropdown" class="navbar-collapse collapse">
+          <ul class="navbar-nav mr-auto">
+            <!--needed for the other to be on the right-->
+          </ul>
+          <ul class="navbar-nav">
+              <li class="nav-item">
+                  <a class="nav-link" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/visual">Visual Network</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/data">Database</a>
+              </li>
+          </ul>
+      </div>
     </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="/">Home</a></li>
-      <li class="active"><a href="/visual">Visual Network</a></li>
-      <li class="active"><a href="/data">Database</a></li>
-    </ul>
-  </div>
-</nav> -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-faded">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Gene Net</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="navbarNavDropdown" class="navbar-collapse collapse">
-            <ul class="navbar-nav mr-auto">
-              <!--needed for the other to be on the right-->
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/visual">Visual Network</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/data">Database</a>
-                </li>
-            </ul>
+  </nav>
+
+  <section id="about">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h2>About</h2>
+            <p class="lead">Welcome to Gene Net! This is a web app designed to enhance gene-targeted therapies by visualizing the intricate connections between around 3000 genes. Gene Net offers users an interactive visual experience with genes in their networks along with a database that allows them to learn more details about their gene of interest.</p>
+          </div>
         </div>
       </div>
-    </nav>
-<div class="container">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">About</h3>
-    </div>
-    <div class="panel-body">
-      Welcome to Gene Net! This is a web app designed to enhance gene-targeted therapies by visualizing the intricate connections between around 3000 genes. Gene Net offers users an interactive visual experience with genes in their networks along with a database that allows them to personalize their searches.
-    </div>
-  </div>
+    </section>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Resources</h3>
-    </div>
-    <div class="panel-body">
-      Human gene network data was pulled from TRRUST (http://www.grnpedia.org/trrust/). PMIDs for each gene were obtained from this data and then used in PubMed in order to scrape additional data, such as the official name and symbol.
+    <section id="resources" class="bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h2>Resources</h2>
+            <p class="lead">
+              Human gene network data was pulled from TRRUST (http://www.grnpedia.org/trrust/). PMIDs for each gene were obtained from this data and then used in PubMed in order to scrape additional data, such as the official name and symbol.
 
-      *Brainstorming*
-      Sigma visualization
-      Bootstrap
-      json
-      JavaScript
-      Python
-    </div>
-  </div>
+              *Brainstorming*
+              Sigma visualization
+              Bootstrap
+              json
+              JavaScript
+              Python
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Contributors</h3>
-    </div>
-    <div class="panel-body">
-      <p>Zachery Miranda, *email*</p>
-      <p>Seung-Hyun Brianna Ko, sbko@mit.edu</p>
-    </div>
-  </div>
-</div>
-
-
+    <section id="contributors">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h2>Contributors</h2>
+            <p class="lead">Zachery Miranda, *email*</p>
+            <p class="lead">Seung-Hyun Brianna Ko, sbko@mit.edu</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom JavaScript for this theme -->
+  <script src="js/scrolling-nav.js"></script>
 </body>
 </html>
