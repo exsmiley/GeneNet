@@ -70,15 +70,16 @@
         <th>#</th>
         <th>PMID</th>
         <th>Gene Symbol</th>
+        <th>Name</th>
         <th>Gene Type</th>
         <th>Location</th>
         <th>Locus</th>
-        <th>Gene Length</th>
+        <!-- <th>Gene Length</th> -->
         <th>Exon</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
+    <tbody id='rows'>
+<!--       <tr>
         <th scope="row">1</th>
         <td></td>
         <td></td>
@@ -127,15 +128,51 @@
         <td></td>
         <td></td>
         <td></td>
-      </tr>
+      </tr> -->
     </tbody>
   </table>
 </div>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="/static/js/jquery-3.3.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+  <script type="text/javascript">
+
+    var pmidData = {};
+
+    $.get('/api/all_pmids', function(data) {
+
+      pmidData = data;
+      console.log(data[2])
+
+      // now populate tables
+      count = 0
+      for(var pmid in data) {
+        count += 1
+        $('#rows').append('<tr>')//<th scope="row">' + count + '</th>')
+        $('#rows').append('<td>'+ count +'</td>')
+        $('#rows').append('<td>'+ pmid +'</td>')
+        $('#rows').append('<td>'+ data[pmid]['Official Symbol'] +'</td>')
+        $('#rows').append('<td>'+ data[pmid]['Official Full Name'] +'</td>')
+        $('#rows').append('<td>'+ data[pmid]['Gene type'] +'</td>')
+        $('#rows').append('<td>'+ data[pmid]['Chromosome'] +'</td>')
+        $('#rows').append('<td>'+ data[pmid]['Location'] +'</td>')
+        // $('#rows').append('<td>'+ data[pmid]['Orthologs'] +'</td>')
+        $('#rows').append('<td>'+ data[pmid]['Exon count'] +'</td>')
+        $('#rows').append('</tr>')
+        
+      }
+    })
+
+
+  </script>
+
+
+
+
 </body>
 </html>
