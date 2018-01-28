@@ -271,12 +271,16 @@
 
         // first add children to graph and to finishedIds
         var i = 0;
-        var N = edgeMap[parentId].length;
+        var children = new Set(edgeMap[parentId])
+        var N = children.size;
 
         var r = Math.sqrt(x*x+y*y);
 
         if(N == 0) {
           return
+        }
+        if(levels == 1) {
+          console.log(N);
         }
 
         var sliceSize = (endRadians-startRadians)/N;
@@ -284,7 +288,7 @@
         // maintains children to start/end radians
         var managementMap = {}
         var nodesToAdd = [];
-        var children = new Set(edgeMap[parentId])
+        
 
         for(childId of children) {
           managementMap[childId] = {};
@@ -324,6 +328,10 @@
           var y2 = managementMap[childId]['y']
           var startRadians2 = managementMap[childId]['startRadians']
           var endRadians2 = managementMap[childId]['endRadians']
+          if(levels == 1) {
+            console.log(x2 + ', ' + y2 + " " + startRadians2 + ", " + endRadians2)
+          }
+          
           addChildren(childId, childSize, startRadians2, endRadians2, x2, y2, levels+1)
         }
       }
