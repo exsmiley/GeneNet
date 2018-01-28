@@ -1,163 +1,102 @@
 <html>
 <head>
-    <script type="text/javascript" src="/static/js/vis.js"></script>
-    <link href="/static/css/vis.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/sigma.min.js"></script>
+    <script type="text/javascript" src="/static/js/plugins/supervisor.js"></script>
+    <script type="text/javascript" src="/static/js/plugins/worker.js"></script>
 
     <style type="text/css">
-        #mynetwork {
-            width: 600px;
-            height: 400px;
-            border: 1px solid lightgray;
+        #derp {
+          width: 100%;
+          height: 100%;
+          display: block;
+          border: 1px solid lightgray;
         }
     </style>
 </head>
 <body>
-<div id="mynetwork"></div>
+<div id="derp"></div>
 <h1>Gene Net</h1>
-<script type="text/javascript">
-    // create an array with nodes
-    // TODO keep appending nodes as needed
-    var nodes = new vis.DataSet([
-        {id: 1, label: 'Gene 1'},
-        {id: 2, label: 'Gene 2'},
-        {id: 3, label: 'Gene 3'},
-        {id: 4, label: 'Gene 4'},
-        {id: 'hi', label: 'Gene 5'}
-    ]);
+<h1>Hi there fren!</h1>
+  <script>
+    // Let's first initialize sigma:
+    var s = new sigma('derp');
+    var graph = s.graph;
 
-    // create an array with edges
-    // TODO keep appending edges as needed
-    var edges = new vis.DataSet([
-        {from: 1, to: 3, label: 'derp'},
-        {from: 1, to: 2},
-        {from: 2, to: 4},
-        {from: 2, to: 'hi'}
-    ]);
-
-    // create a network
-    var container = document.getElementById('mynetwork');
-
-    // provide the data in the vis format
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
-
-    var options = {
-        // connections/arrows settings
-        edges:{
-            // arrow direction indicates source gene activates destination gene? no arrow for suppression? maybe dashed arrows for suppression
-            arrows: {
-                // to:     {enabled: true, scaleFactor:1, type:'arrow'},
-                from:   {enabled: true, scaleFactor:1, type:'arrow'}
-            },
-            arrowStrikethrough: false,
-            // play with chosen later
-            // chosen: true,
-            color:{
-                color: 'black',
-                highlight: 'blue',
-                inherit: 'from',
-                opacity: 1.0   
-            },
-            dashes: false,
-            // play with font later
-            // font: false
-            // from: 2,
-            hoverWidth: 2,
-            // width: 0.5,
-            length: 3,
-        },
-
-        // nodes settings
-        nodes:{
-            borderWidth: 0.5,
-            borderWidthSelected: 3,
-            // chosen: true, // function that calls on reorganizing network and dropping down table?
-            color:{
-                border: 'black',
-                background: 'white',
-                highlight:{
-                    border: 'blue',
-                    background: '#6bffff',
-                },
-                hover:{
-                    border: 'black',
-                    background: '#4ab3f9',
-                }
-            },
-
-            // chosen.label nice for aesthetics
-            fixed: false, // needs to be conditionally dependent on click?
-            
-            label: 'Gene 1', // needs to be dynamic
-            labelHighlightBold: true,
-            title: 'Gene', // redundant of label, which is more important,
-            heightConstraint: true
-        },
-
-        // layout settings
-        layout:{
-            randomSeed: undefined,
-            improvedLayout: true,
-            hierarchical:{
-                enabled: false, // conditionally true after clicking on node...
-                // levelSeparation: 150,
-                // nodeSpacing: 100,
-                // treeSpacing: 200,
-                // blockShifting: true,
-                // edgeMinimization: true,
-                // parentCentralization: true,
-                // direction: 'UD',
-                // sortMethod: 'hubsize'
-            }
-        },
-
-        // click events
-        interaction:{
-            dragNodes:true,
-            dragView: true,
-            hideEdgesOnDrag: false,
-            hideNodesOnDrag: false,
-            hover: true,
-            hoverConnectedEdges: true,
-            // play around with keyboard settings later
-            // keyboard: {
-            //     enabled: false,
-            //     speed: {x: 10, y: 10, zoom: 0.02},
-            //     bindToWindow: true
-            // },
-            multiselect: false,
-            navigationButtons: false,
-            selectable: true,
-            selectConnectedEdges: true,
-            tooltipDelay: 300, // make 'title' field?
-            zoomView: true
-        },
-
-    };
-    
-    // initialize your network!
-    var network = new vis.Network(container, data, options);
-
-    var heldNodes = []
-    network.on("click", function (params) {
-        var node_id = params['nodes'][0]
-        if(node_id) {
-            for(node1 of heldNodes) {
-                if(node_id != node1) {
-                    nodes.update({id: node1, fixed: false, x: 200, y: 200})
-                }
-            }
-            heldNodes = []
-
-            nodes.update({id: node_id, fixed: true, x: 0, y: -150});
-            heldNodes.push(node_id)
-        }
+    s.settings({
+      labelThreshold: 50,
+      autoRescale: false
     });
 
+    // Then, let's add some data to display:
+    // graph.addNode({
+    //   // Main attributes:
+    //   id: 'n0',
+    //   label: 'Hello',
+    //   // Display attributes:
+    //   x: 0,
+    //   y: 0,
+    //   size: 1,
+    //   color: '#f00'
+    // }).addNode({
+    //   // Main attributes:
+    //   id: 'n1',
+    //   label: 'World !',
+    //   // Display attributes:
+    //   x: 1,
+    //   y: 1,
+    //   size: 1,
+    //   color: '#00f'
+    // }).addEdge({
+    //   id: 'e0',
+    //   // Reference extremities:
+    //   source: 'n0',
+    //   target: 'n1'
+    // });
 
-    network.setOptions(options);
-</script>
+
+    // Load edges and nodes from API through AJAX
+    $.get('/api/nodes', function(data) {
+        i = 0
+        N = data.length
+        for(node of data) {
+            i += 1
+            // console.log(i)
+            graph.addNode({
+                id: node.id,
+                label: node.label,
+
+                x: Math.random()*1000*Math.cos(2 * i * Math.PI / N),
+                y: Math.random()*1000*Math.sin(2 * i * Math.PI / N),
+                size: 5,
+                color: '#'+Math.floor(Math.random()*16777215).toString(16)
+            })
+        }
+        s.refresh();
+        
+        $.get('/api/edges', function(data) {
+            num = 1
+            for(edge of data) {
+                graph.addEdge({
+                    id: 'e' + num,
+                    source: edge.from,
+                    target: edge.to
+                })
+                num += 1
+            }
+            s.refresh();
+            s.startForceAtlas2({worker: true, barnesHutOptimize: true, scalingRatio: 3, gravity: 1});
+            setTimeout(function() {
+                s.killForceAtlas2()
+                console.log("killed force atlas")
+            }, 5000)
+        })
+    })
+
+
+
+    // Finally, let's ask our sigma instance to refresh:
+    s.refresh();
+  </script>
 </body>
 </html>
