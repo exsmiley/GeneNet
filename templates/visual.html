@@ -102,6 +102,7 @@
           </table>
         </div>
         <h4>Search for PMID/Gene Symbol:</h4>
+        <div class="alert alert-danger" role="alert" id='warn' style="display: none;"></div>
         <div class="input-group mb-3">
           <input id='txt_field' class="form-control">
           <div class="input-group-append">
@@ -135,10 +136,25 @@
     }
 
     function queryIdFromText() {
-      rawr = $('#txt_field').val()
+      var rawr1 = $('#txt_field').val()
+      rawr = rawr1.toUpperCase();
+
+      if(rawr == '' || (!idToName.hasOwnProperty(rawr) && !nameToId.hasOwnProperty(rawr))) {
+        $('#warn').html(rawr1 + " is not a valid input");
+        $('#warn').show()
+        return
+      }
+
+      if(nameToId.hasOwnProperty(rawr)) {
+        rawr = nameToId[rawr]
+      }
+
+
       queryId(rawr);
       drawLoop(rawr);
       $('#txt_field').val('')
+      $('#warn').val('')
+      $('#warn').hide()
     }
 
     $('#txt_field').keypress(function (e) {
@@ -167,8 +183,8 @@
 
     // possibly keep track of edge map?
     var edgeMap = {};
-    var nameToId = {};
-    var idToName = {};
+    nameToId = {};
+    idToName = {};
 
     // Load edges and nodes from API through AJAX
     $.get('/api/nodes', function(data) {
@@ -278,9 +294,6 @@
         if(N == 0) {
           return
         }
-        if(levels == 1) {
-          console.log(N);
-        }
 
         var sliceSize = (endRadians-startRadians)/N;
 
@@ -327,9 +340,6 @@
           var y2 = managementMap[childId]['y']
           var startRadians2 = managementMap[childId]['startRadians']
           var endRadians2 = managementMap[childId]['endRadians']
-          if(levels == 1) {
-            console.log(x2 + ', ' + y2 + " " + startRadians2 + ", " + endRadians2)
-          }
           
           addChildren(childId, childSize, startRadians2, endRadians2, x2, y2, levels+1)
         }
