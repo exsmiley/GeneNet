@@ -61,7 +61,7 @@
   
   <div class="container">
     <div class="row">
-      <div class="col-sm-8">
+      <div class="col-sm-8" id='derp-father'>
         <div id='derp'></div>
       </div>
       <div class="col-sm-4">
@@ -109,6 +109,7 @@
             <button class="btn btn-outline-secondary" onClick='queryIdFromText()'>Search!</button>
           </div>
         </div>
+        <button class="btn btn-primary" onClick='reset()'>Reset Graph</button>
       </div>
     </div>
   </div>
@@ -136,8 +137,8 @@
 
     function queryIdFromText() {
       rawr = $('#txt_field').val()
-      console.log(rawr)
       queryId(rawr);
+      drawLoop(rawr);
       $('#txt_field').val('')
     }
 
@@ -162,18 +163,21 @@
     var nodes;
     var edges;
 
+    var finishedIds = {};
+    var circleRadius = 50;
+
     // possibly keep track of edge map?
     var edgeMap = {};
     var nameToId = {};
+    var idToName = {};
 
     // Load edges and nodes from API through AJAX
     $.get('/api/nodes', function(data) {
         nodes = data;
-        i = 0
-        N = data.length
+        var i = 0
+        var N = data.length
         for(node of data) {
             i += 1
-            // console.log(i)
             graph.addNode({
                 id: node.id,
                 label: node.label,
@@ -185,12 +189,13 @@
             })
             edgeMap[node.id] = [];
             nameToId[node.label] = node.id;
+            idToName[node.id] = node.label;
         }
         s.refresh();
         
         $.get('/api/edges', function(data) {
             edges = data;
-            num = 1
+            var num = 1
             for(edge of data) {
                 graph.addEdge({
                     id: 'e' + num,
@@ -201,11 +206,6 @@
                 edgeMap[edge.from].push(edge.to)
             }
             s.refresh();
-            // s.startForceAtlas2({worker: true, barnesHutOptimize: true, scalingRatio: 3, gravity: 1});
-            // setTimeout(function() {
-            //     s.killForceAtlas2()
-            //     console.log("killed force atlas")
-            // }, 1000)
         })
     })
 
@@ -226,35 +226,182 @@
     s.startNoverlap();
 
     s.bind("clickNode", function (params) {
-      // console.log(params)
       
       var node = params.data.node;
       var nodeId = node.id;
 
-      console.log(node)
-
-      // sigma.plugins.animate(
-      //   s,
-      //   {
-      //     x: 1500,
-      //     y: 1500,
-      //     // size: 'to_size',
-      //     // color: 'to_color'
-      //   },
-      //   {
-      //     nodes: [nodeId],
-      //     easing: 'cubicInOut',
-      //     duration: 1000,
-      //     onComplete: function() {
-      //       // do stuff here after animation is complete
-      //       console.log("i finished my dude")
-      //     }
-      //   }
-      // );
-      console.log(nodeId)
-
-      // TODO populate the table
+      queryId(nodeId);
+      drawLoop(nodeId);
     });
+
+    function drawLoop(parentId) {
+      // use finishedIds global variable
+      graph.clear()
+      // clear the graph
+      $('#derp').remove(); 
+      $('#derp-father').html('<div id="derp"></div>');
+
+      s = new sigma('derp');
+      graph = s.graph;
+
+      s.settings({
+        labelThreshold: 50,
+        autoRescale: true,
+        edgeHoverSizeRatio: 3
+      });
+
+      // unsure about size so far
+      parentSize = 16;
+      graph.addNode({
+        id: parentId,
+        label: idToName[parentId],
+        x: 0,
+        y: 0,
+        size: parentSize,
+        color: '#'+Math.floor(Math.random()*16777215).toString(16)
+      });
+
+      finishedIds = {};
+      finishedIds[parentId] = true;
+      // s.refresh();
+
+      function addChildren(parentId, parentSize, startRadians, endRadians, x, y, levels) {
+        // s.refresh();
+        var childSize = parentSize/2;
+
+        // first add children to graph and to finishedIds
+        var i = 0;
+        var N = edgeMap[parentId].length;
+
+        var r = Math.sqrt(x*x+y*y);
+
+        if(N == 0) {
+          return
+        }
+
+        var sliceSize = (endRadians-startRadians)/N;
+
+        // maintains children to start/end radians
+        var managementMap = {}
+        var nodesToAdd = [];
+        var children = new Set(edgeMap[parentId])
+
+        for(childId of children) {
+          managementMap[childId] = {};
+
+          managementMap[childId]['x'] = (r+circleRadius/levels)*Math.cos(startRadians+i*sliceSize);
+          managementMap[childId]['y'] = (r+circleRadius/levels)*Math.sin(startRadians+i*sliceSize);
+          managementMap[childId]['startRadians'] = startRadians+i*sliceSize;
+          managementMap[childId]['endRadians'] = startRadians+(i+1)*sliceSize;
+
+          if(finishedIds[childId] === undefined) {
+            graph.addNode({
+              id: childId,
+              label: idToName[childId],
+              x: managementMap[childId]['x'],
+              y: managementMap[childId]['y'],
+              size: childSize,
+              color: '#'+Math.floor(Math.random()*16777215).toString(16)
+            });
+            nodesToAdd.push(childId)
+          }          
+
+          // second add edges to children in graph
+          graph.addEdge({
+            id: 'e' + parentId + '_' + childId,
+            source: parentId,
+            target: childId,
+            size: childSize/8
+          });
+
+          finishedIds[childId] = true;
+          i += 1;
+        }
+        // s.refresh();
+        // recurse for each child of original parent
+        for(childId of nodesToAdd) {
+          var x2 = managementMap[childId]['x']
+          var y2 = managementMap[childId]['y']
+          var startRadians2 = managementMap[childId]['startRadians']
+          var endRadians2 = managementMap[childId]['endRadians']
+          addChildren(childId, childSize, startRadians2, endRadians2, x2, y2, levels+1)
+        }
+      }
+
+
+      // now start adding all of the children
+      addChildren(parentId, parentSize, 0, 2*Math.PI, 0, 0, 1);
+      s.refresh();
+      // s.startNoverlap();
+
+      s.bind("clickNode", function (params) {
+        var node = params.data.node;
+        var nodeId = node.id;
+
+        queryId(nodeId);
+        drawLoop(nodeId);
+      });
+    }
+
+    function reset() {
+      s.kill();
+      // clear the graph
+      $('#derp').remove(); 
+      $('#derp-father').html('<div id="derp"></div>');
+
+      s = new sigma('derp');
+      graph = s.graph;
+
+      s.settings({
+        labelThreshold: 50,
+        autoRescale: false,
+        edgeHoverSizeRatio: 3
+      });
+
+      var listener = s.configNoverlap(config);
+
+      // Bind all events:
+      listener.bind('start stop interpolate', function(event) {
+        console.log(event.type);
+      });
+
+      // Start the algorithm:
+      s.startNoverlap();
+
+      var i = 0
+      var N = nodes.length
+      for(node of nodes) {
+          i += 1
+          graph.addNode({
+              id: node.id,
+              label: node.label,
+
+              x: Math.random()*300*Math.cos(2 * i * Math.PI / N),
+              y: Math.random()*300*Math.sin(2 * i * Math.PI / N),
+              size: 2,
+              color: '#'+Math.floor(Math.random()*16777215).toString(16)
+          })
+      }
+
+      var num = 1
+      for(edge of edges) {
+          graph.addEdge({
+              id: 'e' + num,
+              source: edge.from,
+              target: edge.to
+          })
+          num += 1
+          edgeMap[edge.from].push(edge.to)
+      }
+      s.refresh();
+
+      s.bind("clickNode", function (params) {
+        var node = params.data.node;
+        var nodeId = node.id;
+        queryId(nodeId);
+        drawLoop(nodeId);
+      });
+    }
     
   </script>
 </body>
